@@ -1,1 +1,8 @@
-[ ]
+[ {
+  "courseId" : 100,
+  "name" : "BD",
+  "teacherId" : 5,
+  "maxEnrollment" : 80,
+  "credits" : 6,
+  "studentsEnrolled" : [ 450, 451 ]
+} ]

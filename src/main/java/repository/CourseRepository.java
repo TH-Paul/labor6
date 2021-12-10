@@ -22,8 +22,17 @@ public class CourseRepository extends InMemoryRepository<Course>{
 
         courseToUpdate.setCredits(obj.getCredits());
         courseToUpdate.setMaxEnrollment(obj.getMaxEnrollment());
-        courseToUpdate.setTeacher(obj.getTeacher());
+        courseToUpdate.setTeacherId(obj.getTeacherId());
 
         return courseToUpdate;
+    }
+
+    public Course findById(int id){
+        for(Course course : this.repoList){
+            if(course.getCourseId() == id){
+                return course;
+            }
+        }
+        return null;
     }
 }

@@ -43,4 +43,5 @@ public abstract class InMemoryRepository<T> implements ICrudRepository<T> {
         this.repoList.remove(obj);
     }
 
+    public abstract T findById(int id);
 }

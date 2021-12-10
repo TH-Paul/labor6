@@ -3,9 +3,9 @@ package controller;
 import exceptions.CreditsLimit;
 import exceptions.FullCourse;
 import model.Course;
+import model.Person;
 import model.Student;
-import repository.CourseFileRepository;
-import repository.FileRepository;
+import repository.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,18 +14,20 @@ import java.util.List;
 
 public class StudentController extends AbstractController<Student>{
 
-    private final CourseFileRepository courseRepo;
+    private ICrudRepository<Course> courseRepo;
 
-    public StudentController(FileRepository<Student> repository, CourseFileRepository courseRepo) {
+    public StudentController(ICrudRepository<Student> repository, ICrudRepository<Course> courseRepo) {
         super(repository);
         this.courseRepo = courseRepo;
     }
 
+    public StudentController(ICrudRepository<Student> repository, CommunicationDBRepository communicationDBRepository) {
+        super(repository, communicationDBRepository);
+    }
 
-
-    public List<Student> sortStudentsById(){
+    public List<Student> sortStudentsByName(){
         List<Student> students = new ArrayList<>(obtainObjects());
-        students.sort(Comparator.comparing(Student::getStudentId));
+        students.sort(Comparator.comparing(Person::getLastName));
         return students;
     }
 
@@ -44,7 +46,7 @@ public class StudentController extends AbstractController<Student>{
      * @param object - Student
      */
     @Override
-    public void create(Student object) throws IOException {
+    public void create(Student object) throws IOException{
         this.repository.create(object);
     }
 
@@ -53,43 +55,87 @@ public class StudentController extends AbstractController<Student>{
      * @param object - to be deleted
      */
     @Override
-    public void delete(Student object) throws IOException {
-        this.repository.delete(object);
+    public void delete(Student object) throws IOException{
 
-        for(Course course : courseRepo.getAll()){
-//            for(Student student : course.getStudentsEnrolled()){
-//                if(student.wholeName().equals(object.wholeName())){
-//                    course.getStudentsEnrolled().remove(student);
-//                }
-//            }
-            course.getStudentsEnrolled().removeIf(student -> student.getStudentId() == object.getStudentId());
+        if(this.repository instanceof DBRepository){
+            communicationDBRepository.deleteStudentEffect(object);
+            this.repository.delete(object);
         }
 
-        courseRepo.writeToFile();
+        if(this.repository instanceof InMemoryRepository) {
+            this.repository.delete(object);
+
+            for (Course course : courseRepo.getAll()) {
+                course.getStudentsEnrolled().removeIf(studentId -> studentId == object.getStudentId());
+            }
+
+            if (courseRepo instanceof FileRepository) {
+                ((FileRepository<Course>) courseRepo).writeToFile();
+            }
+        }
     }
 
-    public boolean register(Course course, Student student) throws IOException {
-        if(student.getTotalCredits() + course.getCredits() > 30){
-            throw new CreditsLimit("Too much credits");
-        }
-        if(course.getMaxEnrollment() - course.getStudentsEnrolled().size() == 0){
-            throw new FullCourse("No more places!");
-        }
+    public boolean register(int courseId, int studentId) throws IOException {
 
-        for(Course c : student.getEnrolledCourses()){
-            if(c.getName().equals(course.getName())){
-                return false;
+        if(repository instanceof InMemoryRepository) {
+            Course course = ((InMemoryRepository<Course>) courseRepo).findById(courseId);
+            Student registeredStudent = ((InMemoryRepository<Student>) this.repository).findById(studentId);
+            if (registeredStudent.getTotalCredits() + course.getCredits() > 30) {
+                throw new CreditsLimit("Too much credits");
+            }
+            if (course.getMaxEnrollment() - course.getStudentsEnrolled().size() == 0) {
+                throw new FullCourse("No more places!");
+            }
+
+            for (int c : registeredStudent.getEnrolledCourses()) {
+                if (c == course.getCourseId()) {
+                    return false;
+                }
+            }
+
+            course.getStudentsEnrolled().add(studentId);
+            registeredStudent.getEnrolledCourses().add(courseId);
+            registeredStudent.setTotalCredits(registeredStudent.getTotalCredits() + course.getCredits());
+
+            if (courseRepo instanceof FileRepository && this.repository instanceof FileRepository) {
+                ((FileRepository<Course>) courseRepo).writeToFile();
+                ((FileRepository<Student>) this.repository).writeToFile();
             }
         }
 
-        course.getStudentsEnrolled().add(student);
-        student.getEnrolledCourses().add(course);
-        student.setTotalCredits(student.getTotalCredits() + course.getCredits());
+        else{
+            Course course = communicationDBRepository.getCourseDBRepository().getCourse(courseId);
+            Student registeredStudent = communicationDBRepository.getStudentDBRepository().getStudent(studentId);
 
-        courseRepo.writeToFile();
-        this.repository.writeToFile();
+            if (registeredStudent.getTotalCredits() + course.getCredits() > 30) {
+                throw new CreditsLimit("Too much credits");
+            }
+            if (course.getMaxEnrollment() - course.getStudentsEnrolled().size() == 0) {
+                throw new FullCourse("No more places!");
+            }
 
+            for (int c : registeredStudent.getEnrolledCourses()) {
+                if (c == course.getCourseId()) {
+                    return false;
+                }
+            }
 
+            communicationDBRepository.registerStudent(courseId, studentId);
+
+        }
         return true;
+    }
+
+    @Override
+    public Student findById(int id) {
+
+        if(repository instanceof DBRepository){
+            return communicationDBRepository.getStudentDBRepository().getStudent(id);
+        }
+
+        if(repository instanceof InMemoryRepository) {
+            return ((InMemoryRepository<Student>) this.repository).findById(id);
+        }
+        return null;
     }
 }

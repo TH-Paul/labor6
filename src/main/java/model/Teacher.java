@@ -8,30 +8,39 @@ import java.util.Objects;
 
 public class Teacher extends Person{
 
-    @JsonIgnore
-    private List<Course> courses;
+    private int teacherId;
+    private List<Integer> courses;
 
 
     public Teacher() {
         super();
     }
 
-    public Teacher(String firstName, String lastName) {
+    public Teacher(String firstName, String lastName, int teacherId) {
         super(firstName, lastName);
+        this.teacherId = teacherId;
         this.courses = new ArrayList<>();
     }
 
-    public Teacher(String firstName, String lastName, List<Course> courses) {
+    public Teacher(String firstName, String lastName, int teacherId, List<Integer> courses) {
         super(firstName, lastName);
+        this.teacherId = teacherId;
         this.courses = courses;
     }
 
-    public List<Course> getCourses() {
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(int teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public List<Integer> getCourses() {
         return courses;
     }
 
-
-    public void setCourses(List<Course> courses) {
+    public void setCourses(List<Integer> courses) {
         this.courses = courses;
     }
 
@@ -40,39 +49,21 @@ public class Teacher extends Person{
         if (this == o) return true;
         if (!(o instanceof Teacher teacher)) return false;
         if (!super.equals(o)) return false;
-        return Objects.equals(courses, teacher.courses);
+        return teacherId == teacher.teacherId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), courses);
-    }
-
-
-    /**
-     *
-     * @return list with the names of the courses
-     */
-    public List<String> getCoursesNames(){
-        List<String> coursesList = new ArrayList<>();
-        for (Course c : courses){
-            String name = c.getName();
-            coursesList.add(name);
-        }
-        return coursesList;
+        return Objects.hash(super.hashCode(), teacherId);
     }
 
     @Override
     public String toString() {
-
         return "Teacher{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", courses=" + getCoursesNames() +
+                ", teacherId=" + teacherId +
+                ", courses=" + courses +
                 '}';
-    }
-
-    public String showTeacher(){
-        return '\n' + this.wholeName() + '\n' + "Courses: " + getCoursesNames() + '\n';
     }
 }

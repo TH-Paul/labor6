@@ -13,10 +13,10 @@ import java.util.List;
 
 public class CourseFileRepository extends FileRepository<Course>{
 
-    private final TeacherFileRepository teacherRepo;
-    private final StudentFileRepository studentRepo;
+    private final ICrudRepository<Teacher> teacherRepo;
+    private final ICrudRepository<Student> studentRepo;
 
-    public CourseFileRepository(File file, TeacherFileRepository teacherRepo, StudentFileRepository studentRepo) throws IOException{
+    public CourseFileRepository(File file, ICrudRepository<Teacher> teacherRepo, ICrudRepository<Student> studentRepo) throws IOException{
         super();
         this.file = file;
         this.teacherRepo = teacherRepo;
@@ -25,31 +25,28 @@ public class CourseFileRepository extends FileRepository<Course>{
     }
 
     /**
-     * finds the Teacher Object with the given name in the teacher repo
-     * @param teacherName1 - String
-     * @return Teacher Object
+     * finds the Student Object with the given id in the student repo
+     * @param studentId - String
+     * @return Student Object
      */
-    public Teacher findTeacherWithName(String teacherName1){
-        for(Teacher teacher : teacherRepo.getAll()){
-            String teacherName2 = teacher.getLastName() + " " + teacher.getFirstName();
-            if(teacherName2.equals(teacherName1)){
-                return teacher;
+    public Student findStudentWithId(int studentId){
+        for(Student student : studentRepo.getAll()){
+            if(student.getStudentId() == studentId){
+                return student;
             }
         }
         return null;
     }
 
-
     /**
-     * finds the Student Object with the given name in the student repo
-     * @param studentNameAndId1 - String
-     * @return Student Object
+     * finds the Teacher Object with the given id in the student repo
+     * @param teacherId - String
+     * @return Teacher Object
      */
-    public Student findStudentWithNameAndId(String studentNameAndId1){
-        for(Student student : studentRepo.getAll()){
-            String studentNameAndId2 = student.obtainNameAndId();
-            if(studentNameAndId2.equals(studentNameAndId1)){
-                return student;
+    public Teacher findTeacherWithId(int teacherId){
+        for(Teacher teacher : teacherRepo.getAll()){
+            if(teacher.getTeacherId() == teacherId){
+                return teacher;
             }
         }
         return null;
@@ -59,17 +56,24 @@ public class CourseFileRepository extends FileRepository<Course>{
     /**
      *
      * @param array - from parsing the json nodes
-     * @return list of strings with student names and ids
+     * @return list of strings with student ids
      */
-    public List<String> obtainStudentNamesAndIds(JsonNode array){
-        List<String> studentNames = new ArrayList<>();
+    public List<Integer> obtainStudentIds(JsonNode array){
+        List<Integer> studentIds = new ArrayList<>();
         for(int i = 0; i < array.size(); i++){
-            studentNames.add(array.get(i).asText());
+            studentIds.add(array.get(i).asInt());
         }
-        return studentNames;
+        return studentIds;
     }
 
-
+    public Course findById(int id){
+        for(Course course : this.repoList){
+            if(course.getCourseId() == id){
+                return course;
+            }
+        }
+        return null;
+    }
 
     public void loadFromFile() throws IOException{
         Reader reader = new BufferedReader(new FileReader(this.file));
@@ -79,32 +83,23 @@ public class CourseFileRepository extends FileRepository<Course>{
 
         for(JsonNode node : parser){
             Course course = new Course();
+            course.setCourseId(node.path("courseId").asInt());
             course.setName(node.path("name").asText());
             course.setMaxEnrollment(node.path("maxEnrollment").asInt());
             course.setCredits(node.path("credits").asInt());
 
+            course.setTeacherId(node.path("teacherId").asInt());
+            if(course.getTeacherId() == 0){
+                course.setTeacherId(null);
+            }
 
-            Teacher teacher = findTeacherWithName(node.path("teacherName").asText());
-            course.setTeacher(teacher);
 
             course.setStudentsEnrolled(new ArrayList<>());
-
-            JsonNode array = node.path("studentsNamesAndIds");
-
+            JsonNode array = node.path("studentsEnrolled");
             if(array.size() > 0) {
-                List<String> studentNamesAndIds = obtainStudentNamesAndIds(array);
-
-                for (String studentNameAndId : studentNamesAndIds) {
-                    Student student = findStudentWithNameAndId(studentNameAndId);
-                    course.getStudentsEnrolled().add(student);
-                    student.getEnrolledCourses().add(course);
-                }
+                List<Integer> studentIds = obtainStudentIds(array);
+                course.setStudentsEnrolled(studentIds);
             }
-
-            if(teacher != null){
-                teacher.getCourses().add(course);
-            }
-
             repoList.add(course);
         }
 

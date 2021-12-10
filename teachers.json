@@ -1,0 +1,11 @@
+[ {
+  "firstName" : "Catalin",
+  "lastName" : "Rusu",
+  "teacherId" : 1,
+  "courses" : [ ]
+}, {
+  "firstName" : "Diana",
+  "lastName" : "Cristea",
+  "teacherId" : 5,
+  "courses" : [ 100 ]
+} ]

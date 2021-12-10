@@ -4,9 +4,7 @@ import exceptions.InvalidCourseChange;
 import model.Course;
 import model.Student;
 import model.Teacher;
-import repository.FileRepository;
-import repository.StudentFileRepository;
-import repository.TeacherFileRepository;
+import repository.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,13 +14,17 @@ import java.util.List;
 
 public class CourseController extends AbstractController<Course>{
 
-    private final TeacherFileRepository teacherRepo;
-    private final StudentFileRepository studentRepo;
+    private ICrudRepository<Teacher> teacherRepo;
+    private ICrudRepository<Student> studentRepo;
 
-    public CourseController(FileRepository<Course> repository, TeacherFileRepository teacherRepo, StudentFileRepository studentRepo) {
+    public CourseController(ICrudRepository<Course> repository, ICrudRepository<Teacher> teacherRepo, ICrudRepository<Student> studentRepo) {
         super(repository);
         this.teacherRepo = teacherRepo;
         this.studentRepo = studentRepo;
+    }
+
+    public CourseController(ICrudRepository<Course> repository, CommunicationDBRepository communicationDBRepository) {
+        super(repository, communicationDBRepository);
     }
 
     public List<Course> sortCoursesByCredits(){
@@ -46,7 +48,7 @@ public class CourseController extends AbstractController<Course>{
      * @param object - Course
      */
     @Override
-    public void create(Course object) throws IOException {
+    public void create(Course object) throws IOException{
         this.repository.create(object);
     }
 
@@ -55,28 +57,50 @@ public class CourseController extends AbstractController<Course>{
      * @param object - to be deleted
      */
     @Override
-    public void delete(Course object) throws IOException {
-        this.repository.delete(object);
+    public void delete(Course object) throws IOException{
 
-        for(Teacher teacher : teacherRepo.getAll()){
-           if(teacher == object.getTeacher()){
-               teacher.getCourses().remove(object);
-           }
+        if(this.repository instanceof DBRepository){
+            communicationDBRepository.deleteCourseEffect(object);
+            this.repository.delete(object);
         }
 
-        for(Student student : studentRepo.getAll()){
+        if(this.repository instanceof InMemoryRepository) {
+            this.repository.delete(object);
+            for (Teacher teacher : teacherRepo.getAll()) {
+                if (teacher.getTeacherId() == object.getTeacherId()) {
+                    teacher.getCourses().remove(object.getCourseId());
+                }
+            }
+
+            for (Student student : studentRepo.getAll()) {
 //            for(Course course : student.getEnrolledCourses()){
 //                if (course == object){
 //                    student.getEnrolledCourses().remove(object);
 //                    student.setTotalCredits(student.getTotalCredits() - object.getCredits());
 //                }
 //            }
-            student.setTotalCredits(student.getTotalCredits() - object.getCredits());
-            student.getEnrolledCourses().removeIf(course -> course.getName().equals(object.getName()));
+                student.setTotalCredits(student.getTotalCredits() - object.getCredits());
+                student.getEnrolledCourses().removeIf(courseId -> courseId == object.getCourseId());
+            }
         }
 
-        studentRepo.writeToFile();
-        teacherRepo.writeToFile();
+        if(studentRepo instanceof FileRepository && teacherRepo instanceof FileRepository) {
+            ((FileRepository<Student>) studentRepo).writeToFile();
+            ((FileRepository<Teacher>) teacherRepo).writeToFile();
+        }
+    }
+
+    @Override
+    public Course findById(int id) {
+        if(repository instanceof DBRepository){
+            return communicationDBRepository.getCourseDBRepository().getCourse(id);
+        }
+
+        if(repository instanceof InMemoryRepository) {
+            return ((InMemoryRepository<Course>) this.repository).findById(id);
+        }
+
+        return null;
     }
 
 
@@ -91,64 +115,83 @@ public class CourseController extends AbstractController<Course>{
         return availableCourses;
     }
 
-    public void assignTeacherForCourse(Teacher teacher, Course course) throws IOException {
-        Teacher oldTeacher = new Teacher();
-        for(Course c : this.repository.getAll()){
-            if(c == course){
-                if(c.getTeacher() != null){
-                    oldTeacher = c.getTeacher();
-                }
-                course.setTeacher(teacher);
-                break;
-            }
-        }
-        teacher.getCourses().add(course);
+    public void assignTeacherForCourse(int teacherId, int courseId) throws IOException{
+        if(repository instanceof InMemoryRepository) {
+            for (Course c : this.repository.getAll()) {
+                if (c.getCourseId() == courseId) {
+                    if (c.getTeacherId() != null) {
+                        ((InMemoryRepository<Teacher>) teacherRepo).findById(c.getTeacherId())
+                                .getCourses().remove(courseId);
+                    }
 
-        for(Teacher teacher1 : teacherRepo.getAll()){
-            if(teacher1 == oldTeacher){
-                teacher1.getCourses().remove(course);
-                break;
-            }
-        }
+                    c.setTeacherId(teacherId);
 
-        this.repository.writeToFile();
-        teacherRepo.writeToFile();
-    }
-
-    public void modifyCourseCredits(Course modifiedCourse, int newCredits) throws IOException {
-        for(Student student : studentRepo.getAll()){
-            for(Course course : student.getEnrolledCourses()){
-                if (course == modifiedCourse){
-                    student.setTotalCredits(student.getTotalCredits() - modifiedCourse.getCredits() + newCredits);
-                    break;
+                    ((InMemoryRepository<Teacher>) teacherRepo).findById(teacherId)
+                            .getCourses().add(courseId);
                 }
             }
+
+            if (this.repository instanceof FileRepository && teacherRepo instanceof FileRepository) {
+                ((FileRepository<Course>) this.repository).writeToFile();
+                ((FileRepository<Teacher>) teacherRepo).writeToFile();
+            }
         }
 
-//        for(Course course : this.obtainObjects()){
-//            if(course == modifiedCourse){
-//                course.setCredits(newCredits);
-//                break;
-//            }
-//        }
-
-        modifiedCourse.setCredits(newCredits);
-        this.repository.writeToFile();
-        studentRepo.writeToFile();
-    }
-
-    public void modifyCourseMaxEnrolled(Course modifiedCourse, int newMaxEnrolled) throws IOException {
-//            for(Course course : this.obtainObjects()){
-//                if(course == modifiedCourse){
-//                    course.setMaxEnrollment(newMaxEnrolled);
-//                    break;
-//                }
-//            }
-        if(newMaxEnrolled < modifiedCourse.getStudentsEnrolled().size()){
-            throw new InvalidCourseChange("There are already more students enrolled!");
+        if(repository instanceof DBRepository){
+            communicationDBRepository.assignTeacher(teacherId, courseId);
         }
-        modifiedCourse.setMaxEnrollment(newMaxEnrolled);
-        this.repository.writeToFile();
     }
+
+    public void modifyCourseCredits(int courseId, int newCredits) throws IOException{
+
+        if(repository instanceof InMemoryRepository) {
+            int oldCredits = ((InMemoryRepository<Course>) this.repository).findById(courseId).getCredits();
+
+            for (Student student : studentRepo.getAll()) {
+                for (int course : student.getEnrolledCourses()) {
+                    if (course == courseId) {
+                        student.setTotalCredits(student.getTotalCredits() - oldCredits + newCredits);
+                        break;
+                    }
+                }
+            }
+
+            ((InMemoryRepository<Course>) this.repository).findById(courseId).setCredits(newCredits);
+
+            if (this.repository instanceof FileRepository && teacherRepo instanceof FileRepository) {
+                ((FileRepository<Course>) this.repository).writeToFile();
+                ((FileRepository<Teacher>) teacherRepo).writeToFile();
+            }
+        }
+
+        if(repository instanceof DBRepository){
+            communicationDBRepository.modifyCourseCredits(courseId, newCredits);
+        }
+
+    }
+
+    public void modifyCourseMaxEnrolled(int courseId, int newMaxEnrolled) throws IOException {
+
+        if(repository instanceof InMemoryRepository) {
+            Course modifiedCourse = ((InMemoryRepository<Course>) this.repository).findById(courseId);
+
+            if (newMaxEnrolled < modifiedCourse.getStudentsEnrolled().size()) {
+                throw new InvalidCourseChange("There are already more students enrolled!");
+            }
+
+            modifiedCourse.setMaxEnrollment(newMaxEnrolled);
+
+            if (this.repository instanceof FileRepository) {
+                ((FileRepository<Course>) this.repository).writeToFile();
+            }
+        }
+
+        if(repository instanceof DBRepository){
+            communicationDBRepository.modifyCourseMaxEnrolled(courseId, newMaxEnrolled);
+        }
+
+    }
+
+
 
 }

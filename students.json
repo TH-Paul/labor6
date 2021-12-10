@@ -1,1 +1,13 @@
-[ ]
+[ {
+  "firstName" : "Paul",
+  "lastName" : "Tarta",
+  "studentId" : 450,
+  "totalCredits" : 5,
+  "enrolledCourses" : [ 100 ]
+}, {
+  "firstName" : "Andrei",
+  "lastName" : "Silion",
+  "studentId" : 451,
+  "totalCredits" : 5,
+  "enrolledCourses" : [ 100 ]
+} ]

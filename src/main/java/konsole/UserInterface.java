@@ -12,6 +12,7 @@ import model.Student;
 import model.Teacher;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -89,6 +90,67 @@ public class UserInterface {
         return -1;
     }
 
+
+    public List<String> getCoursesNames(List<Integer> coursesIds){
+        List<String> coursesNames = new ArrayList<>();
+        if(coursesIds != null) {
+            for (int courseId : coursesIds) {
+                Course course = courseController.findById(courseId);
+                String courseName = course.getName() + "-" + course.getCourseId();
+                coursesNames.add(courseName);
+            }
+        }
+
+        return coursesNames;
+    }
+
+    public String showStudent(Student student){
+        return '\n' + student.getLastName() + " " + student.getFirstName() + '\n' + "ID: "
+                + student.getStudentId() + '\n' + "Total credits: " + student.getTotalCredits() + '\n'
+                + "Enrolled Courses: " + getCoursesNames(student.getEnrolledCourses()) + '\n';
+    }
+
+    public String getTeacherName(int teacherId){
+        return teacherController.findById(teacherId).getLastName() + " "
+                + teacherController.findById(teacherId).getFirstName();
+    }
+
+    public List<String> getStudentsNames(List<Integer> studentsIds){
+        List<String> studentsNames = new ArrayList<>();
+
+        if(studentsIds != null) {
+            for (int studentId : studentsIds) {
+                Student student = studentController.findById(studentId);
+                String studentName = student.getLastName() + " " + student.getFirstName() + "-" + student.getStudentId();
+                studentsNames.add(studentName);
+            }
+        }
+
+        return studentsNames;
+    }
+
+    public String showCourse(Course course){
+        if(course.getTeacherId() == null) {
+            return '\n' + course.getName() + '\n' + "ID: " + course.getCourseId() + '\n'
+                    + "No teacher assigned!" +  '\n' + "Maximum number of students: " +
+                    course.getMaxEnrollment() + '\n'
+                    + "Enrolled Students: " + getStudentsNames(course.getStudentsEnrolled()) + '\n' +
+                    "Credits: " + course.getCredits() + '\n';
+        }
+
+        return '\n' + course.getName() + '\n' + "ID: " + course.getCourseId() + '\n'
+                + "Teacher: " + getTeacherName(course.getTeacherId()) + '\n' + "Maximum number of students: " +
+                course.getMaxEnrollment() + '\n'
+                + "Enrolled Students: " + getStudentsNames(course.getStudentsEnrolled()) + '\n' +
+                "Credits: " + course.getCredits() + '\n';
+
+    }
+
+    public String showTeacher(Teacher teacher){
+        return '\n' + teacher.getLastName() + " " + teacher.getFirstName() + '\n' + "ID: " + teacher.getTeacherId() + '\n'
+                + "Courses: " + getCoursesNames(teacher.getCourses()) + '\n';
+    }
+
     public void showStudents(){
         if(studentController.obtainObjects().size() == 0){
             System.out.println("\nNo students yet!\n");
@@ -97,7 +159,7 @@ public class UserInterface {
 
         System.out.println("\nStudents: ");
         for(int i = 0; i < studentController.obtainObjects().size(); i++){
-            System.out.println((i+1) + ". " + studentController.obtainObjects().get(i).showStudent());
+            System.out.println((i+1) + ". " + showStudent(studentController.obtainObjects().get(i)));
         }
 
     }
@@ -110,7 +172,7 @@ public class UserInterface {
 
         System.out.println("\nTeachers: ");
         for(int i = 0; i < teacherController.obtainObjects().size(); i++){
-            System.out.println((i+1) + ". " + teacherController.obtainObjects().get(i).showTeacher());
+            System.out.println((i+1) + ". " + showTeacher(teacherController.obtainObjects().get(i)));
         }
     }
 
@@ -122,7 +184,7 @@ public class UserInterface {
 
         System.out.println("\nCourses: ");
         for(int i = 0; i < courseController.obtainObjects().size(); i++){
-            System.out.println((i+1) + ". " + courseController.obtainObjects().get(i).showCourse());
+            System.out.println((i+1) + ". " + showCourse(courseController.obtainObjects().get(i)));
         }
     }
 
@@ -136,17 +198,18 @@ public class UserInterface {
 
         System.out.println("\nAvailable Courses: ");
         for(int i = 0; i < availableCourses.size(); i++){
-            System.out.println((i+1) + ". " + availableCourses.get(i).showCourse());
+            System.out.println((i+1) + ". " + showCourse(availableCourses.get(i)));
         }
     }
 
     public void showStudentsEnrolledToACourse(){
-        System.out.print("\nEnter course's name: ");
-        String courseName = readString();
+        showCourses();
+
+        int courseId = readInt("course ID");
         Course course = new Course();
         boolean found = false;
         for(Course c : courseController.obtainObjects()){
-            if(c.getName().equals(courseName)){
+            if(c.getCourseId()==courseId){
                 course = c;
                 found = true;
                 break;
@@ -154,7 +217,7 @@ public class UserInterface {
         }
 
         if(!found){
-            System.out.println("\nThere is no course with the given name!\n");
+            System.out.println("\nThere is no course with the given id!\n");
             return;
         }
 
@@ -164,11 +227,15 @@ public class UserInterface {
         }
 
         for(int i = 0; i < course.getStudentsEnrolled().size(); i++){
-            System.out.println((i+1) + ". " + course.getStudentsEnrolled().get(i).showStudent());
+
+            Student student = studentController.findById(course.getStudentsEnrolled().get(i));
+            String studentNameAndId = student.getLastName() + " " + student.getFirstName() +
+                    "-" + student.getStudentId();
+            System.out.println((i+1) + ". " + studentNameAndId);
         }
     }
 
-    public void addStudent() throws IOException {
+    public void addStudent() throws IOException{
         System.out.print("\nEnter student's first name: ");
         String firstName = readString();
         System.out.print("Enter student's last name: ");
@@ -181,31 +248,34 @@ public class UserInterface {
         System.out.println("\nStudent added with success!\n");
     }
 
-    public void addCourse() throws IOException {
+    public void addCourse() throws IOException{
+        int courseId = readInt("course ID");
         System.out.print("\nEnter course's name: ");
         String courseName = readString();
         int maxEnrollment = readInt("max enrollment");
         int credits = readInt("credits");
 
-        Course course = new Course(courseName, maxEnrollment, credits);
+        Course course = new Course(courseId, courseName, maxEnrollment, credits);
         courseController.create(course);
 
         System.out.println("\nCourse added with success!\n");
     }
 
-    public void addTeacher() throws IOException {
+    public void addTeacher() throws IOException{
+        int teacherId = readInt("teacher ID");
         System.out.print("\nEnter teacher's first name: ");
         String firstName = readString();
         System.out.print("Enter teacher's last name: ");
         String lastName = readString();
 
-        Teacher teacher = new Teacher(firstName, lastName);
+        Teacher teacher = new Teacher(firstName, lastName, teacherId);
         teacherController.create(teacher);
 
         System.out.println("\nTeacher added with success!\n");
     }
 
-    public void deleteStudent() throws IOException {
+    public void deleteStudent() throws IOException{
+        showStudents();
         int studentId = readInt("student id");
         boolean found = false;
         int index = 0;
@@ -226,15 +296,13 @@ public class UserInterface {
         }
     }
 
-    public void deleteTeacher() throws IOException {
-        System.out.print("\nEnter teacher's first name: ");
-        String firstName = readString();
-        System.out.print("Enter teacher's last name: ");
-        String lastName = readString();
+    public void deleteTeacher() throws IOException{
+        showTeachers();
+        int id = readInt("teacher id");
         boolean found = false;
         int index = 0;
         for(int i = 0; i < teacherController.obtainObjects().size(); i++){
-            if(teacherController.obtainObjects().get(i).wholeName().equals(lastName + " " + firstName)){
+            if(teacherController.obtainObjects().get(i).getTeacherId()==id){
                 found = true;
                 index = i;
                 break;
@@ -242,7 +310,7 @@ public class UserInterface {
         }
 
         if(!found){
-            System.out.println("\nThere is no teacher with this name!\n");
+            System.out.println("\nThere is no teacher with this id!\n");
         }
         else{
             teacherController.delete(teacherController.obtainObjects().get(index));
@@ -250,13 +318,13 @@ public class UserInterface {
         }
     }
 
-    public void deleteCourse() throws IOException {
-        System.out.print("\nEnter course's name: ");
-        String courseName = readString();
+    public void deleteCourse() throws IOException{
+        showCourses();
+        int id = readInt("course id");
         boolean found = false;
         int index = 0;
         for(int i = 0; i < courseController.obtainObjects().size(); i++){
-            if(courseController.obtainObjects().get(i).getName().equals(courseName)){
+            if(courseController.obtainObjects().get(i).getCourseId()==id){
                 found = true;
                 index = i;
                 break;
@@ -264,7 +332,7 @@ public class UserInterface {
         }
 
         if(!found){
-            System.out.println("\nThere is no course with this name!\n");
+            System.out.println("\nThere is no course with this id!\n");
         }
         else{
             courseController.delete(courseController.obtainObjects().get(index));
@@ -272,14 +340,15 @@ public class UserInterface {
         }
     }
 
-    public void registerStudent() throws IOException {
+    public void registerStudent() throws IOException{
+
+        showStudents();
+
         int studentId = readInt("student id");
         boolean found = false;
-        int studentIndex = 0;
         for(int i = 0; i < studentController.obtainObjects().size(); i++){
             if(studentController.obtainObjects().get(i).getStudentId() == studentId){
                 found = true;
-                studentIndex = i;
                 break;
             }
         }
@@ -290,29 +359,27 @@ public class UserInterface {
             return;
         }
 
-        System.out.print("\nEnter course's name: ");
-        String courseName = readString();
+        showCourses();
+
+        int courseId = readInt("course ID");
         found = false;
-        int courseIndex = 0;
         for(int i = 0; i < courseController.obtainObjects().size(); i++){
-            if(courseController.obtainObjects().get(i).getName().equals(courseName)){
+            if(courseController.obtainObjects().get(i).getCourseId()==courseId){
                 found = true;
-                courseIndex = i;
                 break;
             }
         }
 
         if(!found){
-            System.out.println("\nThere is no course with this name!");
+            System.out.println("\nThere is no course with this id!");
             System.out.println("The registration could not take place!\n");
             return;
         }
 
         try{
-            boolean succes = studentController.register(courseController.obtainObjects().get(courseIndex),
-                    studentController.obtainObjects().get(studentIndex));
+            boolean success = studentController.register(courseId, studentId);
 
-            if(!succes){
+            if(!success){
                 System.out.println("\nThe student is already enrolled in the course!\n");
                 return;
             }
@@ -328,70 +395,64 @@ public class UserInterface {
 
     }
 
-    public void assignTeacher() throws IOException {
-        System.out.print("\nEnter teacher's first name: ");
-        String firstName = readString();
-        System.out.print("Enter teacher's last name: ");
-        String lastName = readString();
+    public void assignTeacher() throws IOException{
+        showTeachers();
+
+        int teacherId = readInt("teacher ID");
 
         boolean found = false;
-        int teacherIndex = 0;
         for(int i = 0; i < teacherController.obtainObjects().size(); i++){
-            if(teacherController.obtainObjects().get(i).wholeName().equals(lastName + " " + firstName)){
+            if(teacherController.obtainObjects().get(i).getTeacherId()==teacherId){
                 found = true;
-                teacherIndex = i;
                 break;
             }
         }
 
         if(!found){
-            System.out.println("\nThere is no teacher with this name!");
+            System.out.println("\nThere is no teacher with this id!");
             System.out.println("The assignment could not take place!\n");
             return;
         }
 
-        System.out.print("\nEnter course's name: ");
-        String courseName = readString();
+        showCourses();
+
+        int courseId = readInt("course ID");
         found = false;
-        int courseIndex = 0;
         for(int i = 0; i < courseController.obtainObjects().size(); i++){
-            if(courseController.obtainObjects().get(i).getName().equals(courseName)){
+            if(courseController.obtainObjects().get(i).getCourseId()==courseId){
                 found = true;
-                courseIndex = i;
                 break;
             }
         }
 
         if(!found){
-            System.out.println("\nThere is no course with this name!");
+            System.out.println("\nThere is no course with this id!");
             System.out.println("The assignment could not take place!\n");
             return;
         }
 
-        courseController.assignTeacherForCourse(teacherController.obtainObjects().get(teacherIndex),
-                courseController.obtainObjects().get(courseIndex));
+        courseController.assignTeacherForCourse(teacherId, courseId);
 
         System.out.println("\nAssignment was successful!\n");
     }
 
-    public void modifyCourseCredits() throws IOException {
-        System.out.print("\nEnter course's name: ");
-        String courseName = readString();
+    public void modifyCourseCredits() throws IOException{
+        showCourses();
+
+        int courseId = readInt("course ID");
 
         int newCredits = readInt("new credits value");
 
         boolean found = false;
-        int courseIndex = 0;
         for(int i = 0; i < courseController.obtainObjects().size(); i++){
-            if(courseController.obtainObjects().get(i).getName().equals(courseName)){
+            if(courseController.obtainObjects().get(i).getCourseId()==courseId){
                 found = true;
-                courseIndex = i;
                 break;
             }
         }
 
         if(!found){
-            System.out.println("\nThere is no course with this name!");
+            System.out.println("\nThere is no course with this id!");
             System.out.println("The operation could not take place!\n");
             return;
         }
@@ -403,47 +464,46 @@ public class UserInterface {
 //            }
 //        }
 
-        courseController.modifyCourseCredits(courseController.obtainObjects().get(courseIndex), newCredits);
+        courseController.modifyCourseCredits(courseId, newCredits);
         System.out.println("\nOperation was successful!\n");
     }
 
     public void modifyCourseMaxEnrollment(){
-        System.out.print("\nEnter course's name: ");
-        String courseName = readString();
+        showCourses();
+
+        int courseId = readInt("course ID");
 
         int newMaxEnrollment = readInt("new max enrollment value");
 
         boolean found = false;
-        int courseIndex = 0;
         for(int i = 0; i < courseController.obtainObjects().size(); i++){
-            if(courseController.obtainObjects().get(i).getName().equals(courseName)){
+            if(courseController.obtainObjects().get(i).getCourseId()==courseId){
                 found = true;
-                courseIndex = i;
                 break;
             }
         }
 
         if(!found) {
-            System.out.println("\nThere is no course with this name!");
+            System.out.println("\nThere is no course with this id!");
             System.out.println("The operation could not take place!\n");
             return;
         }
 
         try{
-            courseController.modifyCourseMaxEnrolled(courseController.obtainObjects().get(courseIndex), newMaxEnrollment);
+            courseController.modifyCourseMaxEnrolled(courseId, newMaxEnrollment);
             System.out.println("\nOperation was successful!\n");
         }
         catch(InvalidCourseChange | IOException e){
             System.out.println("\nThere are already "
-                    + courseController.obtainObjects().get(courseIndex).getStudentsEnrolled().size() + " students enrolled!");
+                    + courseController.findById(courseId).getStudentsEnrolled().size() + " students enrolled!");
         }
 
     }
 
-    public void sortStudentsById(){
-        List<Student> sortedStudents = studentController.sortStudentsById();
+    public void sortStudentsByName(){
+        List<Student> sortedStudents = studentController.sortStudentsByName();
         for(int i = 0; i < sortedStudents.size(); i++){
-            System.out.println((i+1) + ". " + sortedStudents.get(i).showStudent());
+            System.out.println((i+1) + ". " + showStudent(sortedStudents.get(i)));
         }
     }
 
@@ -459,14 +519,14 @@ public class UserInterface {
         }
 
         for(int i = 0; i < filtered.size(); i++){
-            System.out.println((i+1) + ". " + filtered.get(i).showStudent());
+            System.out.println((i+1) + ". " + showStudent(filtered.get(i)));
         }
     }
 
     public void sortCoursesByCredits(){
         List<Course> sortedCourses = courseController.sortCoursesByCredits();
         for(int i = 0; i < sortedCourses.size(); i++){
-            System.out.println((i+1) + ". " + sortedCourses.get(i).showCourse());
+            System.out.println((i+1) + ". " + showCourse(sortedCourses.get(i)));
         }
     }
 
@@ -482,7 +542,7 @@ public class UserInterface {
         }
 
         for(int i = 0; i < filtered.size(); i++){
-            System.out.println((i+1) + ". " + filtered.get(i).showCourse());
+            System.out.println((i+1) + ". " + showCourse(filtered.get(i)));
         }
     }
 
@@ -492,7 +552,7 @@ public class UserInterface {
         System.out.println(" 1. Show  all students" + "\t\t\t\t\t\t\t\t\t9. Assign teacher");
         System.out.println(" 2. Show all teachers" + "\t\t\t\t\t\t\t\t\t10. Modify course credits");
         System.out.println(" 3. Show all courses" + "\t\t\t\t\t\t\t\t\t11. Modify course maximum attendance");
-        System.out.println(" 4. Show available courses" + "\t\t\t\t\t\t\t\t12. Sort students by ID");
+        System.out.println(" 4. Show available courses" + "\t\t\t\t\t\t\t\t12. Sort students by name");
         System.out.println(" 5. Show students enrolled to a course" + "\t\t\t\t\t13. Filter students by credits");
         System.out.println(" 6. Add entity" + "\t\t\t\t\t\t\t\t\t\t\t14. Sort courses by credits");
         System.out.println(" 7. Delete entity" + "\t\t\t\t\t\t\t\t\t\t15. Filter courses by number of enrolled students");
@@ -513,7 +573,7 @@ public class UserInterface {
     }
 
 
-    public void runMenu() throws IOException {
+    public void runMenu() throws IOException{
         boolean done = false;
         int option;
 
@@ -626,7 +686,7 @@ public class UserInterface {
             }
 
             else if(option == 12){
-                sortStudentsById();
+                sortStudentsByName();
             }
 
             else if(option == 13){

@@ -1,18 +1,22 @@
 package controller;
 
 import model.Course;
+import model.Student;
 import model.Teacher;
-import repository.CourseFileRepository;
-import repository.FileRepository;
+import repository.*;
 
 import java.io.IOException;
 
 public class TeacherController extends AbstractController<Teacher>{
-    private final CourseFileRepository courseRepo;
+    private ICrudRepository<Course> courseRepo;
 
-    public TeacherController(FileRepository<Teacher> repository, CourseFileRepository courseRepo) {
+    public TeacherController(ICrudRepository<Teacher> repository, ICrudRepository<Course> courseRepo) {
         super(repository);
         this.courseRepo = courseRepo;
+    }
+
+    public TeacherController(ICrudRepository<Teacher> repository, CommunicationDBRepository communicationDBRepository) {
+        super(repository, communicationDBRepository);
     }
 
     /**
@@ -20,7 +24,7 @@ public class TeacherController extends AbstractController<Teacher>{
      * @param object - Teacher
      */
     @Override
-    public void create(Teacher object) throws IOException {
+    public void create(Teacher object) throws IOException{
         this.repository.create(object);
     }
 
@@ -30,16 +34,40 @@ public class TeacherController extends AbstractController<Teacher>{
      * @param object - to be deleted
      */
     @Override
-    public void delete(Teacher object) throws IOException {
-        for(Course course1 : object.getCourses()){
-            for (Course course2 : courseRepo.getAll()){
-                if(course1 == course2){
-                    course2.setTeacher(null);
+    public void delete(Teacher object) throws IOException{
+        if(repository instanceof InMemoryRepository) {
+            for (int course1 : object.getCourses()) {
+                for (Course course2 : courseRepo.getAll()) {
+                    if (course1 == course2.getCourseId()) {
+                        course2.setTeacherId(null);
+                        break;
+                    }
                 }
             }
         }
+
+        if(repository instanceof DBRepository){
+            communicationDBRepository.deleteTeacherEffect(object);
+        }
+
         this.repository.delete(object);
 
-        courseRepo.writeToFile();
+        if(courseRepo instanceof FileRepository) {
+            ((FileRepository<Course>) courseRepo).writeToFile();
+        }
+    }
+
+    @Override
+    public Teacher findById(int id) {
+
+        if(repository instanceof DBRepository){
+            return communicationDBRepository.getTeacherDBRepository().getTeacher(id);
+        }
+
+        if(repository instanceof InMemoryRepository) {
+            return ((InMemoryRepository<Teacher>) this.repository).findById(id);
+        }
+
+        return null;
     }
 }

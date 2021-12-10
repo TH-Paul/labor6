@@ -12,4 +12,13 @@ public class StudentRepository extends InMemoryRepository<Student>{
     public Student update(Student obj){
         return null;
     }
+
+    public Student findById(int id){
+        for(Student student : this.repoList){
+            if(student.getStudentId() == id){
+                return student;
+            }
+        }
+        return null;
+    }
 }

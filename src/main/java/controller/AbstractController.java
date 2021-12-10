@@ -1,15 +1,23 @@
 package controller;
 
-import repository.FileRepository;
+import repository.CommunicationDBRepository;
+import repository.DBRepository;
+import repository.ICrudRepository;
 
 import java.io.IOException;
 import java.util.List;
 
 public abstract class AbstractController<T> {
-    protected FileRepository<T> repository;
+    protected ICrudRepository<T> repository;
+    protected CommunicationDBRepository communicationDBRepository;
 
-    public AbstractController(FileRepository<T> repository) {
+    public AbstractController(ICrudRepository<T> repository) {
         this.repository = repository;
+    }
+
+    public AbstractController(ICrudRepository<T> repository, CommunicationDBRepository communicationDBRepository) {
+        this.repository = repository;
+        this.communicationDBRepository = communicationDBRepository;
     }
 
     /**
@@ -32,4 +40,7 @@ public abstract class AbstractController<T> {
      * @param object - to be deleted
      */
     public abstract void delete(T object) throws IOException;
+
+    public abstract T findById(int id);
+
 }

@@ -9,9 +9,7 @@ import java.util.Objects;
 public class Student extends Person{
     private long studentId;
     private int totalCredits;
-
-    @JsonIgnore
-    private List<Course> enrolledCourses;
+    private List<Integer> enrolledCourses;
 
 
     public Student(){
@@ -25,7 +23,7 @@ public class Student extends Person{
         this.totalCredits = 0;
     }
 
-    public Student(String firstName, String lastName, long studentId, int totalCredits, List<Course> enrolledCourses) {
+    public Student(String firstName, String lastName, long studentId, int totalCredits, List<Integer> enrolledCourses) {
         super(firstName, lastName);
         this.studentId = studentId;
         this.totalCredits = totalCredits;
@@ -52,11 +50,11 @@ public class Student extends Person{
         this.totalCredits = totalCredits;
     }
 
-    public List<Course> getEnrolledCourses() {
+    public List<Integer> getEnrolledCourses() {
         return enrolledCourses;
     }
 
-    public void setEnrolledCourses(List<Course> enrolledCourses) {
+    public void setEnrolledCourses(List<Integer> enrolledCourses) {
         this.enrolledCourses = enrolledCourses;
     }
 
@@ -73,19 +71,6 @@ public class Student extends Person{
         return Objects.hash(super.hashCode(), studentId);
     }
 
-    /**
-     *
-     * @return list with the names of the courses
-     */
-    public List<String> getCoursesNames(){
-        List<String> coursesList = new ArrayList<>();
-        for (Course c : enrolledCourses){
-            String name = c.getName();
-            coursesList.add(name);
-        }
-        return coursesList;
-    }
-
     @Override
     public String toString() {
         return "Student{" +
@@ -93,12 +78,7 @@ public class Student extends Person{
                 ", lastName='" + lastName + '\'' +
                 ", studentId=" + studentId +
                 ", totalCredits=" + totalCredits +
-                ", enrolledCourses=" + getCoursesNames() +
+                ", enrolledCourses=" + enrolledCourses +
                 '}';
-    }
-
-    public String showStudent(){
-        return '\n' + this.wholeName() + '\n' + "ID: " + studentId + '\n' + "Total credits: " +
-                totalCredits + '\n' + "Enrolled Courses: " + getCoursesNames() + '\n';
     }
 }
