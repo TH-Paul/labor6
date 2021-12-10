@@ -73,12 +73,6 @@ public class CourseController extends AbstractController<Course>{
             }
 
             for (Student student : studentRepo.getAll()) {
-//            for(Course course : student.getEnrolledCourses()){
-//                if (course == object){
-//                    student.getEnrolledCourses().remove(object);
-//                    student.setTotalCredits(student.getTotalCredits() - object.getCredits());
-//                }
-//            }
                 student.setTotalCredits(student.getTotalCredits() - object.getCredits());
                 student.getEnrolledCourses().removeIf(courseId -> courseId == object.getCourseId());
             }

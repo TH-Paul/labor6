@@ -1,6 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +27,6 @@ public class Student extends Person{
         this.studentId = studentId;
         this.totalCredits = totalCredits;
         this.enrolledCourses = enrolledCourses;
-    }
-
-    public String obtainNameAndId(){
-        return this.wholeName() + " - " + this.studentId;
     }
 
     public long getStudentId() {

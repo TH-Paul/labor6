@@ -9,14 +9,13 @@ import repository.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws IOException{
         ICrudRepository<Teacher> teacherRepo = new TeacherFileRepository(new File("teachers.json"));
         ICrudRepository<Student> studentRepo = new StudentFileRepository(new File("students.json"));
-        ICrudRepository<Course> courseRepo = new CourseFileRepository(new File("courses.json"), teacherRepo, studentRepo);
+        ICrudRepository<Course> courseRepo = new CourseFileRepository(new File("courses.json"));
 
         TeacherDBRepository teacherRepo1 = new TeacherDBRepository();
         StudentDBRepository studentRepo1 = new StudentDBRepository();

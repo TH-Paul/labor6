@@ -5,7 +5,6 @@ import model.Student;
 import model.Teacher;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 

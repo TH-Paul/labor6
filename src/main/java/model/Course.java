@@ -1,6 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +25,6 @@ public class Course {
         this.studentsEnrolled = new ArrayList<>();
 
 
-    }
-
-    public Course(int courseId, String name, Integer teacherId, int maxEnrollment, List<Integer> studentsEnrolled, int credits) {
-        this.courseId = courseId;
-        this.name = name;
-        this.teacherId = teacherId;
-        this.maxEnrollment = maxEnrollment;
-        this.studentsEnrolled = studentsEnrolled;
-        this.credits = credits;
     }
 
     public int getCourseId() {

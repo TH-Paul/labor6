@@ -1,7 +1,6 @@
 package repository;
 
 import model.Course;
-import model.Student;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

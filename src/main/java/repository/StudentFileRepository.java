@@ -3,7 +3,6 @@ package repository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Student;
-import model.Teacher;
 
 import java.io.*;
 import java.util.ArrayList;

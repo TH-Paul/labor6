@@ -1,7 +1,6 @@
 package controller;
 
 import repository.CommunicationDBRepository;
-import repository.DBRepository;
 import repository.ICrudRepository;
 
 import java.io.IOException;

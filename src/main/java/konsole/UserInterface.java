@@ -457,13 +457,6 @@ public class UserInterface {
             return;
         }
 
-//        for(Course course : courseController.obtainObjects()){
-//            if(course.getName().equals(courseName)){
-//                courseController.modifyCourseCredits(course, newCredits);
-//                break;
-//            }
-//        }
-
         courseController.modifyCourseCredits(courseId, newCredits);
         System.out.println("\nOperation was successful!\n");
     }

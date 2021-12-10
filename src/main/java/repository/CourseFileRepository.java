@@ -4,8 +4,6 @@ package repository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Course;
-import model.Student;
-import model.Teacher;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,45 +11,11 @@ import java.util.List;
 
 public class CourseFileRepository extends FileRepository<Course>{
 
-    private final ICrudRepository<Teacher> teacherRepo;
-    private final ICrudRepository<Student> studentRepo;
-
-    public CourseFileRepository(File file, ICrudRepository<Teacher> teacherRepo, ICrudRepository<Student> studentRepo) throws IOException{
+    public CourseFileRepository(File file) throws IOException{
         super();
         this.file = file;
-        this.teacherRepo = teacherRepo;
-        this.studentRepo = studentRepo;
         loadFromFile();
     }
-
-    /**
-     * finds the Student Object with the given id in the student repo
-     * @param studentId - String
-     * @return Student Object
-     */
-    public Student findStudentWithId(int studentId){
-        for(Student student : studentRepo.getAll()){
-            if(student.getStudentId() == studentId){
-                return student;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * finds the Teacher Object with the given id in the student repo
-     * @param teacherId - String
-     * @return Teacher Object
-     */
-    public Teacher findTeacherWithId(int teacherId){
-        for(Teacher teacher : teacherRepo.getAll()){
-            if(teacher.getTeacherId() == teacherId){
-                return teacher;
-            }
-        }
-        return null;
-    }
-
 
     /**
      *
