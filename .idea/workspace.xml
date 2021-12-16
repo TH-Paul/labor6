@@ -5,38 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6cbcf815-d493-4d4e-8bde-4ff51d42b737" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/map/resources/startmenu-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d2bb586d-61cb-4e1f-a94d-1781379c82e3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/d2bb586d-61cb-4e1f-a94d-1781379c82e3.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/AbstractController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/CourseController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/StudentController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/TeacherController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/exceptions/CreditsLimit.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/exceptions/FullCourse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/exceptions/InvalidCourseChange.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/exceptions/InvalidValue.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/konsole/UserInterface.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Course.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Person.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Student.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Teacher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/CommunicationDBRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/CourseDBRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/CourseFileRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/CourseRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/DBRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/FileRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/ICrudRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/InMemoryRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/StudentDBRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/StudentFileRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/StudentRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/TeacherDBRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/TeacherFileRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/TeacherRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/map/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/map/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/map/konsole/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/map/konsole/GUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/javafxml/startmenu-view.fxml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,11 +50,24 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/target/classes/map/konsole" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="preferences.JavaFX" />
+    <property name="project.structure.side.proportion" value="0.40344828" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\IdeaProjects\labor6\target\classes\map\konsole" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\IdeaProjects\labor6\src\main\java\map\resources" />
+      <recent name="C:\Users\Admin\IdeaProjects\labor6\src\main\resources\javafxml" />
+      <recent name="C:\Users\Admin\IdeaProjects\labor6\src\main\java\map\konsole" />
+      <recent name="C:\Users\Admin\IdeaProjects\labor6\src\main\java\map" />
+      <recent name="C:\Users\Admin\IdeaProjects\labor6\src\main\java\resources" />
+    </key>
   </component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -160,7 +148,10 @@
       <workItem from="1639507369261" duration="8000" />
       <workItem from="1639587708745" duration="450000" />
       <workItem from="1639588817647" duration="199000" />
-      <workItem from="1639589032852" duration="3639000" />
+      <workItem from="1639589032852" duration="9161000" />
+      <workItem from="1639600735646" duration="2471000" />
+      <workItem from="1639650160367" duration="3230000" />
+      <workItem from="1639653468319" duration="20222000" />
     </task>
     <task id="LOCAL-00001" summary="DBRepository">
       <created>1639132387865</created>
@@ -176,7 +167,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639132799466</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Lab6 initial">
+      <created>1639595382073</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1639595382073</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -192,11 +190,13 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="DBRepository" />
     <MESSAGE value="Warnings resolved" />
-    <option name="LAST_COMMIT_MESSAGE" value="Warnings resolved" />
+    <MESSAGE value="Lab6 initial" />
+    <option name="LAST_COMMIT_MESSAGE" value="Lab6 initial" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
