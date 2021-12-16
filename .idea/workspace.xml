@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6cbcf815-d493-4d4e-8bde-4ff51d42b737" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/map/resources/startmenu-view.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d2bb586d-61cb-4e1f-a94d-1781379c82e3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/d2bb586d-61cb-4e1f-a94d-1781379c82e3.xml" afterDir="false" />
+    <list default="true" id="6cbcf815-d493-4d4e-8bde-4ff51d42b737" name="Changes" comment="Student GUI">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/map/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/map/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/map/konsole/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/map/konsole/GUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/javafxml/startmenu-view.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/map/konsole/GUIStudents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/map/konsole/GUIStudents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/map/resources/teachermenu-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/map/resources/teachermenu-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +68,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.Main">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="17" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="map.Main" />
@@ -78,6 +76,14 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="ParallelRun" type="CompoundRunConfigurationType">
+      <toRun name="Main" type="Application" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="CompoundRunConfigurationType">
+      <toRun name="Main" type="Application" />
+      <method v="2" />
     </configuration>
     <configuration name="CourseRepositoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="lab_5" />
@@ -117,12 +123,12 @@
     </configuration>
     <list>
       <item itemvalue="Application.Main" />
+      <item itemvalue="Compound.ParallelRun" />
       <item itemvalue="JUnit.CourseRepositoryTest" />
       <item itemvalue="JUnit.InMemoryRepositoryTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.InMemoryRepositoryTest" />
         <item itemvalue="JUnit.CourseRepositoryTest" />
       </list>
@@ -151,7 +157,7 @@
       <workItem from="1639589032852" duration="9161000" />
       <workItem from="1639600735646" duration="2471000" />
       <workItem from="1639650160367" duration="3230000" />
-      <workItem from="1639653468319" duration="20222000" />
+      <workItem from="1639653468319" duration="25068000" />
     </task>
     <task id="LOCAL-00001" summary="DBRepository">
       <created>1639132387865</created>
@@ -174,7 +180,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639595382073</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Student GUI">
+      <created>1639681234501</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1639681234501</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -196,7 +209,8 @@
     <MESSAGE value="DBRepository" />
     <MESSAGE value="Warnings resolved" />
     <MESSAGE value="Lab6 initial" />
-    <option name="LAST_COMMIT_MESSAGE" value="Lab6 initial" />
+    <MESSAGE value="Student GUI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Student GUI" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

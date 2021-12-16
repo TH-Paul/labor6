@@ -21,7 +21,6 @@ public class GUIStudents {
 
     private Student student;
     private static StudentController studentController;
-    private static TeacherController teacherController;
     private static CourseController courseController;
 
     public Student getStudent() {
@@ -40,14 +39,6 @@ public class GUIStudents {
         GUIStudents.studentController = studentController;
     }
 
-    public static TeacherController getTeacherController() {
-        return teacherController;
-    }
-
-    public static void setTeacherController(TeacherController teacherController) {
-        GUIStudents.teacherController = teacherController;
-    }
-
     public static CourseController getCourseController() {
         return courseController;
     }
@@ -61,8 +52,9 @@ public class GUIStudents {
 
     @FXML
     void goToMainMenu() throws IOException {
-        Main main = new Main();
-        main.changeScene("/startmenu-view.fxml");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/startmenu-view.fxml"));
+        Parent root = loader.load();
+        Main.getStage().getScene().setRoot(root);
     }
 
     @FXML

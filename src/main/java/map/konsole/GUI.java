@@ -21,15 +21,35 @@ import map.repository.TeacherDBRepository;
 import java.io.IOException;
 
 public class GUI {
+    private static int teacherId;
     private final static TeacherDBRepository teacherRepo = new TeacherDBRepository();
     private final static StudentDBRepository studentRepo = new StudentDBRepository();
     private final static CourseDBRepository courseRepo = new CourseDBRepository();
     private final static CommunicationDBRepository communicationDBRepository = new CommunicationDBRepository(courseRepo
             , studentRepo, teacherRepo);
-    private final static StudentController studentController = new StudentController(studentRepo, communicationDBRepository);
-    private final static TeacherController teacherController = new TeacherController(teacherRepo, communicationDBRepository);
-    private final static CourseController courseController = new CourseController(courseRepo, communicationDBRepository);
+    private static StudentController studentController = new StudentController(studentRepo, communicationDBRepository);
+    private static TeacherController teacherController = new TeacherController(teacherRepo, communicationDBRepository);
+    private static CourseController courseController = new CourseController(courseRepo, communicationDBRepository);
 
+    public static int getThisTeacherId() {
+        return teacherId;
+    }
+
+    public static void setThisTeacherId(int teacherId) {
+        GUI.teacherId = teacherId;
+    }
+
+    public static StudentController getStudentController() {
+        return studentController;
+    }
+
+    public static TeacherController getTeacherController() {
+        return teacherController;
+    }
+
+    public static CourseController getCourseController() {
+        return courseController;
+    }
 
     @FXML
     private TextField id;
@@ -54,8 +74,6 @@ public class GUI {
 
     @FXML
     void userLogIn() throws IOException {
-        Main main = new Main();
-
         if(userType.getText().isEmpty() || id.getText().isEmpty()){
             logInInfo.setText("Please enter your data!");
         }
@@ -73,7 +91,6 @@ public class GUI {
                 GUIStudents gui = loader.getController();
                 gui.setStudent(student);
                 GUIStudents.setStudentController(studentController);
-                GUIStudents.setTeacherController(teacherController);
                 GUIStudents.setCourseController(courseController);
                 Main.getStage().getScene().setRoot(root);
             }
@@ -85,8 +102,12 @@ public class GUI {
                 logInInfo.setText("Wrong ID! Try again!");
             }
             else{
-
-                main.changeScene("/teachermenu-view.fxml");
+                teacherId = Integer.parseInt(id.getText());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/teachermenu-view.fxml"));
+                Parent root = loader.load();
+                GUITeachers.setStudentController(studentController);
+                GUITeachers.setTeacherController(teacherController);
+                Main.getStage().getScene().setRoot(root);
             }
         }
         else if(!userType.getText().equals("t") && !userType.getText().equals("s")){
